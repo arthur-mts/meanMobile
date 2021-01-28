@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "889257921512",
+    "project_id": "meanchallenge-edaf2",
+    "storage_bucket": "meanchallenge-edaf2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889257921512:android:b3e2f831e9ccd4b0a5f25d",
+        "android_client_info": {
+          "package_name": "com.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "889257921512-mhbaa2kp6rkbqfc20oqjr41mmjs53c4v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGoVKLvbiEfxGd60pMHDPODze8RQ-VvGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "889257921512-mhbaa2kp6rkbqfc20oqjr41mmjs53c4v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
