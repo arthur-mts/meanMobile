@@ -3,6 +3,9 @@
  */
 
 import firebase, {ReactNativeFirebase} from '@react-native-firebase/app';
+import {AppRegistry} from 'react-native';
+import App from './App';
+import {name as appName} from './app.json';
 
 const firebaseConfig: ReactNativeFirebase.FirebaseAppOptions = {
   appId: '1:889257921512:android:b3e2f831e9ccd4b0a5f25d',
@@ -16,9 +19,5 @@ const firebaseConfig: ReactNativeFirebase.FirebaseAppOptions = {
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
-
-import {AppRegistry} from 'react-native';
-import App from './App';
-import {name as appName} from './app.json';
 
 AppRegistry.registerComponent(appName, () => App);

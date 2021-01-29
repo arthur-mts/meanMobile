@@ -8,17 +8,39 @@
  * @format
  */
 
-import React, {useEffect} from 'react';
-import {SafeAreaView, Text, StatusBar, Button} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  SafeAreaView,
+  Text,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import messaging from '@react-native-firebase/messaging';
+import dynamic from '@react-native-firebase/dynamic-links';
+
+import {postNotification} from './services/api';
 
 const App = () => {
+  const [username, setUsername] = useState<string | null>(null);
+
+  const getUserNameFromLink = (link: string) =>
+    link.substring(link.lastIndexOf('/') + 1, link.indexOf('?'));
+
+  dynamic()
+    .getInitialLink()
+    .then((l) => {
+      if (l && l.url) {
+        setUsername(getUserNameFromLink(l.url));
+      }
+    });
+
+  dynamic().onLink((l) => setUsername(l.url));
+
   useEffect(() => {
     messaging()
       .subscribeToTopic('allApps')
       .then(() => console.log('Subscibed'));
-
-    messaging().onMessage(console.log);
 
     messaging()
       .getToken()
@@ -28,17 +50,49 @@ const App = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <Text>Heelp</Text>
-        <Button
-          title="Click me"
-          onPress={() => {
-            console.log('send message');
-          }}
-        />
+      <SafeAreaView style={styles.container}>
+        {username ? (
+          <>
+            <Text style={styles.headerText}>This page is for {username}</Text>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => {
+                console.log('send message');
+                postNotification('arthur');
+              }}>
+              <Text style={styles.buttonText}>
+                Send notification to {username}
+              </Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <Text style={styles.headerText}>Nothing to see here</Text>
+        )}
       </SafeAreaView>
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 12,
+    marginTop: 24,
+    borderRadius: 6,
+  },
+  buttonText: {
+    fontSize: 20,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+});
 
 export default App;
