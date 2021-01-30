@@ -16,10 +16,11 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import messaging from '@react-native-firebase/messaging';
+//import messaging from '@react-native-firebase/messaging';
 import dynamic from '@react-native-firebase/dynamic-links';
 
 import {postNotification} from './services/api';
+import {Notification, Notifications} from 'react-native-notifications';
 
 const App = () => {
   const [username, setUsername] = useState<string | null>(null);
@@ -27,24 +28,35 @@ const App = () => {
   const getUserNameFromLink = (link: string) =>
     link.substring(link.lastIndexOf('/') + 1, link.indexOf('?'));
 
-  dynamic()
-    .getInitialLink()
-    .then((l) => {
-      if (l && l.url) {
-        setUsername(getUserNameFromLink(l.url));
-      }
-    });
-
-  dynamic().onLink((l) => setUsername(l.url));
+  dynamic().onLink((l) => setUsername(getUserNameFromLink(l.url)));
 
   useEffect(() => {
-    messaging()
-      .subscribeToTopic('allApps')
-      .then(() => console.log('Subscibed'));
+    dynamic()
+      .getInitialLink()
+      .then((l) => {
+        if (l && l.url) {
+          setUsername(getUserNameFromLink(l.url));
+        }
+      });
 
-    messaging()
-      .getToken()
-      .then((token) => console.log('My token :' + token));
+    Notifications.events().registerNotificationReceivedForeground(
+      (notification) => {
+        const payload = notification.payload as any;
+
+        const notificationData: Notification = {
+          body: payload['gcm.notification.body'],
+          title: payload['gcm.notification.title'],
+          identifier: notification.identifier,
+          sound: payload['gcm.notification.sound'],
+          badge: 1,
+          payload: {},
+          thread: '',
+          type: 'normal',
+        };
+
+        Notifications.postLocalNotification(notificationData);
+      },
+    );
   }, []);
 
   return (
@@ -57,8 +69,7 @@ const App = () => {
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                console.log('send message');
-                postNotification('arthur');
+                postNotification(username);
               }}>
               <Text style={styles.buttonText}>
                 Send notification to {username}
@@ -78,6 +89,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    maxWidth: '80%',
+    alignSelf: 'center',
   },
   button: {
     alignItems: 'center',
